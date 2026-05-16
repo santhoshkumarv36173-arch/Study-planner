@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ plan.title }} — Study Planner{% endblock %}
+{% block content %}
+
+<a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
+
+<div class="card">
+    <div class="plan-header">
+        <h1>{{ plan.title }}</h1>
+        <div class="meta">📅 {{ plan.created_at.strftime('%B %d, %Y') }} &nbsp;|&nbsp; ⏱ {{ plan.hours }} hours</div>
+    </div>
+
+    <div class="plan-progress-section">
+        <div class="progress-label">
+            <span>Overall Progress</span>
+            <span class="progress-value">{{ plan.progress }}%</span>
+        </div>
+        <div class="progress-bar-wrap">
+            <div class="progress-bar" style="width:{{ plan.progress }}%"></div>
+        </div>
+    </div>
+
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:16px;">💡 Tap a row to mark it as complete.</p>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr><th class="task-check"></th><th>⏰ Time</th><th>📖 Task</th></tr>
+            </thead>
+            <tbody>
+                {% for task in plan.tasks %}
+                <tr class="task-row row-{{ task.task_type }} {% if task.completed %}done{% endif %}"
+                    onclick="toggleTask({{ task.id }}, this)">
+                    <td class="task-check">{{ '✅' if task.completed else '⬜' }}</td>
+                    <td>{{ task.time_slot }}</td>
+                    <td>{{ task.task }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top:20px;display:flex;justify-content:flex-end;">
+        <form method="POST" action="{{ url_for('delete_plan', plan_id=plan.id) }}"
+            onsubmit="return confirm('Are you sure you want to delete this plan?')">
+            <button type="submit" class="btn btn-danger" style="width:auto;padding:10px 20px;">🗑 Delete Plan</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

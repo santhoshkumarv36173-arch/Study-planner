@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Study Planner{% endblock %}
+{% block content %}
+<div class="dashboard-header">
+    <h1>👋 Hello, {{ current_user.username }}!</h1>
+    <p>Here's an overview of your study plans.</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-value">{{ plans|length }}</div>
+        <div class="stat-label">Total Plans</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value">{{ completed_tasks }}</div>
+        <div class="stat-label">Tasks Done</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div class="stat-value">{{ total_tasks }}</div>
+        <div class="stat-label">Total Tasks</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🎯</div>
+        <div class="stat-value">{{ ((completed_tasks / total_tasks * 100)|round|int if total_tasks > 0 else 0) }}%</div>
+        <div class="stat-label">Overall Progress</div>
+    </div>
+</div>
+
+<div class="section-title">📚 Your Study Plans
+    <a href="{{ url_for('planner') }}" style="margin-left:auto; font-size:0.85rem; font-weight:600; background:var(--primary); color:white; padding:7px 14px; border-radius:8px; text-decoration:none;">+ New Plan</a>
+</div>
+
+{% if plans %}
+<div class="plans-grid">
+    {% for plan in plans %}
+    <div class="plan-card">
+        <div>
+            <div class="plan-card-title">{{ plan.title }}</div>
+            <div class="plan-card-meta">⏱ {{ plan.hours }} hrs &nbsp;|&nbsp; 🗓 {{ plan.created_at.strftime('%b %d, %Y') }}</div>
+        </div>
+        <div>
+            <div style="display:flex;justify-content:space-between;font-size:0.78rem;font-weight:600;margin-bottom:5px;">
+                <span>Progress</span><span>{{ plan.progress }}%</span>
+            </div>
+            <div class="progress-bar-wrap">
+                <div class="progress-bar" style="width:{{ plan.progress }}%"></div>
+            </div>
+        </div>
+        <div class="plan-card-actions">
+            <a href="{{ url_for('view_plan', plan_id=plan.id) }}" class="btn-view">View →</a>
+            <form method="POST" action="{{ url_for('delete_plan', plan_id=plan.id) }}" style="flex:1" onsubmit="return confirm('Delete this plan?')">
+                <button type="submit" class="btn-del" style="width:100%">🗑 Delete</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state card">
+    <div class="empty-icon">📭</div>
+    <p>You don't have any study plans yet.</p>
+    <a href="{{ url_for('planner') }}" class="btn btn-primary" style="display:inline-block;width:auto;padding:10px 24px;text-decoration:none;">Create Your First Plan</a>
+</div>
+{% endif %}
+{% endblock %}

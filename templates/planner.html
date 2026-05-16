@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}New Plan — Study Planner{% endblock %}
+{% block content %}
+<div class="planner-card card">
+    <h1>✏️ Create Study Plan</h1>
+    <p>Enter your subjects and available hours to generate a personalized schedule.</p>
+
+    <form method="POST" id="plannerForm">
+        <input type="hidden" name="action" id="planAction" value="preview">
+        <div class="form-group">
+            <label for="subjects">Subjects <span style="color:var(--text-muted);font-weight:400">(comma-separated)</span></label>
+            <input type="text" id="subjects" name="subjects" placeholder="e.g. Math, Physics, Chemistry"
+                value="{{ request.form.get('subjects', '') }}" required>
+        </div>
+        <div class="form-group">
+            <label for="hours">Total Study Hours</label>
+            <input type="number" id="hours" name="hours" placeholder="e.g. 3" min="0.5" step="0.5"
+                value="{{ request.form.get('hours', '') }}" required>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn btn-secondary" onclick="document.getElementById('planAction').value='preview'">
+                👁 Preview
+            </button>
+            <button type="submit" class="btn btn-primary" onclick="document.getElementById('planAction').value='save'">
+                💾 Save Plan
+            </button>
+        </div>
+    </form>
+</div>
+
+{% if plan %}
+<div class="plan-result card" style="margin-top:24px;">
+    <h2>📅 Your Study Plan</h2>
+    <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px;">This is a preview — click <strong>Save Plan</strong> to store it.</p>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr><th>⏰ Time</th><th>📖 Task</th></tr>
+            </thead>
+            <tbody>
+                {% for item in plan.tasks %}
+                <tr class="row-{{ item.type }}">
+                    <td>{{ item.time }}</td>
+                    <td>{{ item.task }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div style="text-align:center;margin-top:16px;font-weight:600;color:var(--primary)">
+        🔥 Stay consistent. You got this!
+    </div>
+</div>
+{% endif %}
+{% endblock %}

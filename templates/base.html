@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#6366f1">
+    <title>{% block title %}Study Planner{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+    <nav class="navbar">
+        <div class="nav-brand">📚 StudyPlanner</div>
+
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">Dashboard</a>
+            <a href="{{ url_for('planner') }}" class="nav-link {% if request.endpoint == 'planner' %}active{% endif %}">New Plan</a>
+            <span class="nav-user">👤 {{ current_user.username }}</span>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
+            <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+        </div>
+
+        <button class="nav-hamburger" onclick="toggleDrawer()" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <div class="nav-drawer" id="navDrawer">
+        <a href="{{ url_for('dashboard') }}" class="nav-link" onclick="closeDrawer()">🏠 Dashboard</a>
+        <a href="{{ url_for('planner') }}" class="nav-link" onclick="closeDrawer()">✏️ New Plan</a>
+        <span class="nav-user">👤 {{ current_user.username }}</span>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙 Toggle Dark Mode</button>
+        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+    </div>
+    {% endif %}
+
+    <div class="page-wrapper">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
