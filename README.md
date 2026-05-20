@@ -65,6 +65,7 @@ Building smart and simple web applications.
 
 ### Project
 📚 Study Planner Web App
+# live link: https://study-planner-2yo3.onrender.com
 
 ---
 ⭐ Thanks for visiting this project
