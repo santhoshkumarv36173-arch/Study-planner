@@ -332,10 +332,9 @@ def toggle_task(task_id):
         'completed': task.completed,
         'progress': task.plan.progress
     })
+
 with app.app_context():
     db.create_all()
-
-app = app
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
@@ -345,4 +344,3 @@ if __name__ == "__main__":
         port=port,
         debug=True
     )
-  
